@@ -10,6 +10,11 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 import pandas as pd
 from sklearn.model_selection import cross_val_score
 import pickle
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+
 
 # Load the dataset
 file_path = 'F:\main_python_env\Phishing project\Dataset\Final_dataset.csv'
@@ -24,6 +29,7 @@ data = pd.read_csv(file_path)
 label_encoder = LabelEncoder()
 data['status'] = label_encoder.fit_transform(data['status'])
 
+#Shuffling the dataset
 data = data.sample(frac=1, random_state=42).reset_index(drop=True)
 
 
@@ -56,6 +62,7 @@ mlp_model = MLPClassifier()
 #XGBoost Model
 xgb_model = xgb.XGBClassifier()
 
+#
 modelset = [rfc_model,ada_model,knn_model,gbc_model,mlp_model,xgb_model]
 
 result = {}
@@ -80,6 +87,9 @@ resultset = pd.DataFrame(result)
 print(resultset)
 
 
+
+
+#More optional functions
 '''
 # Print the results
 print("Accuracy:", accuracy)
@@ -91,28 +101,20 @@ print("Confusion Matrix:\n", conf_matrix)
 print("Cross-validation scores:", cross_val_scores)
 print("Mean accuracy:", cross_val_scores.mean())
 print("Standard deviation:", cross_val_scores.std())
+'''
 
 
+#Viewing how important features are (their weight)
+def feature_importance(model):
+    # Feature importance
+    importances = model.feature_importances_
+    indices = np.argsort(importances)[::-1]
+
+    # Print the feature ranking
+    print("Feature ranking:")
+
+    for f in range(X.shape[1]):
+        print(f"{f + 1}. feature {indices[f]} ({importances[indices[f]]})")
 
 
-import matplotlib.pyplot as plt
-import numpy as np
-
-# Feature importance
-importances = model.feature_importances_
-indices = np.argsort(importances)[::-1]
-
-# Print the feature ranking
-print("Feature ranking:")
-
-for f in range(X.shape[1]):
-    print(f"{f + 1}. feature {indices[f]} ({importances[indices[f]]})")
-
-# Plot the feature importances of the forest
-plt.figure()
-plt.title("Feature importances")
-plt.bar(range(X.shape[1]), importances[indices], align="center")
-plt.xticks(range(X.shape[1]), indices)
-plt.xlim([-1, X.shape[1]])
-plt.show()'''
 

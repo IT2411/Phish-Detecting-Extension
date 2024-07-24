@@ -12,11 +12,14 @@ from bs4 import BeautifulSoup
 #PHISH = 0
 #LEGIT = 1
 
+#not needed for now
+#url_pattern = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
 
 
-url_pattern = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
+
 
 #FEATURES EXTRACTED FROM THE URL
+
 
 #getting the domain
 def getDomain(url):  
@@ -231,6 +234,9 @@ def anchor_urls(url, soup):
     except:
         return 0
 
+
+
+
 #MAKING THE DATASHEET
 def get_features(url,status):
 
@@ -281,7 +287,8 @@ def get_features(url,status):
 
 
 
-phishing_data = pd.read_csv("F:\main_python_env\Phishing project\Dataset\phish_6.csv")
+#Loading the Phishing dataset
+phishing_data = pd.read_csv("YOUR_PHISH_DATASET_PATH")
 phishing_data.columns = ['url']
 
 phish_sample = phishing_data.copy()
@@ -290,7 +297,8 @@ phish_sample = phish_sample['url']
 
 
 
-legit_data = pd.read_csv("F:\main_python_env\Phishing project\Dataset\legit_6.csv")
+#Loading the Benign dataset
+legit_data = pd.read_csv("YOUR_BENIGN_DATASET_PATH")
 legit_data.columns = ['url']
 
 legit_sample = legit_data.copy()
@@ -298,12 +306,13 @@ legit_sample = legit_sample['url']
 #print(legit_sample.head())
 
 
+#Column names for dataframe
 column_name = ['domain','have_IP','multi_domain','have_at','length','redirect','hyphen_present','short_url','dns','check_cert','domain_age','forwarding','anchor_urls','request_url','status']
 
 
 
 
-
+#Extracting Features from Benign dataset
 legit_feature = []
 label = 1
 
@@ -314,7 +323,7 @@ legit = pd.DataFrame(legit_feature, columns = column_name)
 
 
 
-
+#Extracting Features from Phishing dataset
 phish_feature = []
 label = 0
 
@@ -323,6 +332,9 @@ for i in phish_sample:
 
 phish = pd.DataFrame(phish_feature, columns = column_name)
 
+
+
+#Merging both the datasets
 final_data = pd.concat([legit,phish]).reset_index(drop=True)
-final_data.to_csv('F:\main_python_env\Phishing project\Dataset\extracted_dataset_6.csv')
+final_data.to_csv("PATH_TO_STORE_THE_FINAL_DATASET")
 print('Dataset Processed.')
